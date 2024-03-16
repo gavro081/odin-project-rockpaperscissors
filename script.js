@@ -5,6 +5,39 @@ function getComputerChoice () {
     return 'scissors';
 }
 
+let isGameOver = false;
+
+const b1 = document.querySelector('.rock');
+const b2 = document.querySelector('.paper');
+const b3 = document.querySelector('.scissors');
+
+b1.addEventListener("click", () => {
+    if (!isGameOver)
+    playGame('rock', getComputerChoice());
+})
+
+b2.addEventListener("click", () => {
+    if (!isGameOver)
+    playGame('paper', getComputerChoice());
+})
+
+b3.addEventListener("click", () => {
+    if (!isGameOver)
+    playGame('scissors', getComputerChoice());
+})
+
+const div = document.createElement("div");
+
+div.classList.add("player-score");
+
+document.body.appendChild(div);
+
+let score = {
+    wins: 0,
+    losses: 0,
+    draws: 0
+}
+
 function playRound (playerChoice, computerChoice) {
     
     let win;
@@ -39,27 +72,38 @@ function playRound (playerChoice, computerChoice) {
     else if (win === 'L') console.log(`You Lose! ${computerChoice} beats ${playerChoice}`);
     else console.log(`It's a Tie. You both picked ${playerChoice}`);
     
+
     return win;
 }
 
 function playGame (playerMove){
     
-    let score = {
-        wins: 0,
-        losses: 0,
-        draws: 0
+    const win = playRound(playerMove, getComputerChoice());
+    
+    if (win === 'W') score.wins++;
+    else if (win === 'L') score.losses++;
+    else score.draws++;
+    
+    div.innerText = `Player: ${score.wins}, Computer: ${score.losses}, Draws: ${score.draws}\n`;
+
+    const winner = document.createElement("h1");
+    if (score.wins === 5) {
+        winner.innerText = 'YOU WON!';
+        isGameOver = true;
+    }
+    if (score.losses === 5) {
+        winner.innerText = 'YOU LOST!'; 
+        isGameOver = true;
     }
 
-    for (let i = 0; i < 5; i++){
-        let playerMove = prompt ('Enter Rock, Paper or Scissors!');
-        let result = playRound(playerMove,getComputerChoice());
-        if (result === 'W') score.wins++;
-        else if (result === 'L') score.losses++;
-        else score.draws++; 
+    if (isGameOver) {
+        b1.classList.remove('rock');
+        b2.classList.remove('paper');
+        b3.classList.remove('scissors');
     }
+    winner.classList.add('game-result');
 
-    console.log(score);
+    document.body.appendChild(winner);
 
 }
 
-playGame();
